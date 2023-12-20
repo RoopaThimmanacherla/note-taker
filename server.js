@@ -14,15 +14,13 @@ app.get("/notes", (req, res) =>
   res.sendFile(path.join(__dirname, "public/notes.html"))
 );
 
-app.get("/*", (req, res) =>
-  res.sendFile(path.join(__dirname, "public/notes.html"))
-);
 app.get("/api/notes", (req, res) => {
   fs.readFile("./db/db.json", "utf8", (err, data) => {
     if (err) {
       console.log(err);
     } else {
-      res.status(200).json(data);
+      const parsedData = JSON.parse(data);
+      res.status(200).json(parsedData);
     }
   });
 });
@@ -44,14 +42,10 @@ app.post("/api/notes", (req, res) => {
         const parsedNotes = JSON.parse(data);
 
         parsedNotes.push(newNote);
+        const stringifyedNote = JSON.stringify(parsedNotes, null, 4);
 
-        fs.writeFile(
-          "./db/db.json",
-          JSON.stringify(parsedNotes, null, 4),
-          (err) =>
-            err
-              ? console.error(err)
-              : console.info("successfully updated note!")
+        fs.writeFile("./db/db.json", stringifyedNote, (err) =>
+          err ? console.error(err) : console.info("successfully updated note!")
         );
         const response = {
           status: "success",
@@ -63,13 +57,13 @@ app.post("/api/notes", (req, res) => {
       }
     });
   } else {
-    res.status(500).json("Error in posting review");
+    res.status(500).json(stringifyedNote);
   }
 });
-app.get("/GET/*", (req, res) =>
+
+app.get("*", (req, res) =>
   res.sendFile(path.join(__dirname, "public/index.html"))
 );
-
 app.listen(PORT, () =>
   console.log(`app listening at http://localhost:${PORT}`)
 );
