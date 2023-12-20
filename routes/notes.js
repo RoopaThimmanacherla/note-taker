@@ -1,6 +1,8 @@
 const notes = require("express").Router();
+const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
 
-notes.get("/api/notes", (req, res) => {
+notes.get("/", (req, res) => {
   fs.readFile("./db/db.json", "utf8", (err, data) => {
     if (err) {
       console.log(err);
@@ -11,7 +13,7 @@ notes.get("/api/notes", (req, res) => {
   });
 });
 
-notes.post("/api/notes", (req, res) => {
+notes.post("/", (req, res) => {
   console.info(`${req.method} request received to add a note.`);
 
   const { title, text } = req.body;
@@ -48,7 +50,7 @@ notes.post("/api/notes", (req, res) => {
   }
 });
 
-app.delete("/api/notes/:id", (req, res) => {
+notes.delete("/:id", (req, res) => {
   console.info(`${req.method} request received to delete890 a note.`);
 
   fs.readFile("./db/db.json", "utf8", (err, data) => {
