@@ -64,6 +64,29 @@ app.post("/api/notes", (req, res) => {
 app.get("*", (req, res) =>
   res.sendFile(path.join(__dirname, "public/index.html"))
 );
+
+app.delete("/api/notes/:id", (req, res) => {
+  console.info(`${req.method} request received to delete890 a note.`);
+
+  fs.readFile("./db/db.json", "utf8", (err, data) => {
+    if (err) {
+      console.log(err);
+    } else {
+      const db = JSON.parse(data);
+      let deletedData = db.filter((item) => item.id != req.params.id);
+      console.log(deletedData);
+
+      fs.writeFile(
+        "./db/db.json",
+        JSON.stringify(deletedData, null, 4),
+        (err) =>
+          err
+            ? console.err(err)
+            : console.info("successfully deleted the data!")
+      );
+    }
+  });
+});
 app.listen(PORT, () =>
   console.log(`app listening at http://localhost:${PORT}`)
 );
