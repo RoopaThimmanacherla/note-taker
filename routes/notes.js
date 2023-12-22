@@ -71,6 +71,7 @@ notes.delete("/:id", (req, res) => {
       );
     }
   });
+  res.status(200).json(deletedData);
 });
 
 module.exports = notes;
